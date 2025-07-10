@@ -6,14 +6,15 @@ import Loading from "../../ui/Loading";
 
 function Products({ lessProducts = false }) {
   const { products, isLoadingProducts } = useProducts();
-  const productsToRender = lessProducts ? products?.slice(0, 4) : products;
 
   if (isLoadingProducts) return <Loading type="products" length={4} />;
+
+  const productsToRender = lessProducts ? products?.slice(0, 4) : products;
 
   return (
     <ProductsContainer>
       {productsToRender.map((product) => (
-        <ProductsItem product={product} key={product.id} />
+        <ProductsItem product={product} key={product._id} />
       ))}
     </ProductsContainer>
   );

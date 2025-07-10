@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import { cursor } from "../../utilis/mouse";
-import { formatCurrency } from "../../utilis/helpers";
+import { formatCurrency, urlFor } from "../../utilis/helpers";
 
 import Heading from "../../ui/Heading";
 import Row from "../../ui/Row";
@@ -25,24 +25,28 @@ const ProuductLink = styled(Link)`
 function ProductItems({ product }) {
   const {
     name,
-    price: { raw: productPrice },
-    image: { url },
-    permalink,
+    slug: { current: slug },
+    price,
+    featuredImage,
   } = product;
 
   return (
     <ProuductLink
-      to={`/product/${permalink}`}
+      to={`/product/${slug}`}
       data-cursor-text="Show"
       onClick={() => {
         cursor.removeText();
       }}
     >
       <Row $direction="column" $gap={5}>
-        <img src={url} alt={name} loading="lazy" />
+        <img
+          src={urlFor(featuredImage)}
+          alt={featuredImage.alt}
+          loading="lazy"
+        />
         <Row $direction="column">
           <Heading as="h4">{name}</Heading>
-          <p className="product-price__card">{formatCurrency(productPrice)}</p>
+          <p className="product-price__card">{formatCurrency(price)}</p>
         </Row>
       </Row>
     </ProuductLink>
