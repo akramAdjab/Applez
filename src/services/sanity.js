@@ -1,8 +1,9 @@
 import { createClient } from "@sanity/client";
 
 export const client = createClient({
-  projectId: import.meta.env.SANITY_PROJECT_ID,
-  dataset: import.meta.env.SANITY_DATASET,
-  apiVersion: import.meta.env.SANITY_API_VERSION,
-  useCdn: import.meta.env.SANITY_USE_CDN,
+  projectId: import.meta.env.VITE_SANITY_PROJECT_ID,
+  dataset: import.meta.env.VITE_SANITY_DATASET,
+  apiVersion: import.meta.env.VITE_SANITY_API_VERSION,
+  useCdn: true, // Enable CDN for public access
+  token: import.meta.env.VITE_SANITY_TOKEN, // Optional: for authenticated requests
 });
