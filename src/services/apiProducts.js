@@ -1,24 +1,15 @@
-import commerce from "./commercejs";
+import { client } from "./sanity";
 
-export async function products(currentSearchCategory) {
-  let query = commerce.products;
+export async function sanityProducts(currentSearchCategory) {
+  const query = `*[_type == "products" ${
+    currentSearchCategory !== "all"
+      ? `&& collection->slug.current == "${currentSearchCategory}"`
+      : ""
+  }]{_id, name, slug, price, collection->{name, slug}, featuredImage}`;
 
-  if (currentSearchCategory === "all") query = query.list({ limit: 100 });
-  else
-    query = query.list({
-      category_slug: [currentSearchCategory],
-    });
-
-  const products = await query;
+  const products = await client.fetch(query);
 
   return products;
 }
 
-export async function product(productPermalink) {
-  if (!productPermalink) return;
-
-  const product = await commerce.products.retrieve(productPermalink, {
-    type: "permalink",
-  });
-  return product;
-}
+export async function sanityProduct(slug) {}
