@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 import Heading from "../../ui/Heading";
 import Button from "../../ui/Button";
+import { urlFor } from "../../utilis/helpers";
 
 const Category = styled.div`
   height: 60rem;
@@ -51,15 +52,24 @@ const Category = styled.div`
 `;
 
 function CategoryItem({ category, buttons }) {
-  const { name, slug } = category;
-  const { url } = category.assets.at(0);
+  const {
+    name,
+    slug: { current: slug },
+    featuredImage,
+  } = category;
+
+  console.log(name);
 
   if (buttons) return <Button>{name}</Button>;
 
   return (
     <Link to={`/products?category=${slug}`}>
       <Category>
-        <img src={url} alt={`${name} category`} loading="lazy" />
+        <img
+          src={urlFor(featuredImage)}
+          alt={featuredImage.alt}
+          loading="lazy"
+        />
         <Heading as="h3">{name}</Heading>
       </Category>
     </Link>

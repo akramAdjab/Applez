@@ -7,6 +7,7 @@ import CategoriesButtons from "./CategoriesButtons";
 
 function Categories({ type }) {
   const { categories, isLoadingCategories } = useCategories();
+  console.log(categories);
 
   if (isLoadingCategories)
     return <Loading type={type ? type : "categoriesBoxes"} length={7} />;
@@ -16,7 +17,7 @@ function Categories({ type }) {
   return (
     <CategoriesBoxesContainer $length={categories?.length}>
       {categories?.map((category) => (
-        <CategoryItem category={category} key={category.id} />
+        <CategoryItem category={category} key={category._id} />
       ))}
     </CategoriesBoxesContainer>
   );
