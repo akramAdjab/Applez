@@ -1,6 +1,8 @@
-import commerce from "./commercejs";
+import { client } from "./sanity";
 
 export async function categories() {
-  const categories = await commerce.categories.list();
+  const categories = await client.fetch(
+    `*[_type == "collections"]{_id, name, slug, featuredImage}`
+  );
   return categories;
 }
