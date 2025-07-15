@@ -12,4 +12,10 @@ export async function sanityProducts(currentSearchCategory) {
   return products;
 }
 
-export async function sanityProduct(slug) {}
+export async function sanityProduct(slug) {
+  const query = `*[_type == "products" && slug.current == "${slug}"][0]{_id, name, price, collection->{name, slug}, variantOptions}`;
+
+  const product = await client.fetch(query);
+
+  return product;
+}
