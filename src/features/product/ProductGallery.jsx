@@ -5,6 +5,7 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 
 import styled from "styled-components";
+import { urlFor } from "../../utilis/helpers";
 
 const ImgsContainer = styled.div`
   align-self: start;
@@ -67,12 +68,9 @@ const ImgsContainer = styled.div`
   }
 `;
 
-function ProductGallery({ name, variants, imgsIndex, assets }) {
+function ProductGallery({ variants, imgsIndex }) {
   const colorVariants = variants.find((variant) => variant.name === "Color");
-  const assetsArray = colorVariants.options
-    .at(imgsIndex)
-    .assets.map((img) => assets.filter((asset) => asset.id === img))
-    .flat();
+  const assetsArray = colorVariants.values.at(imgsIndex).optionimages;
 
   return (
     <ImgsContainer>
@@ -86,8 +84,8 @@ function ProductGallery({ name, variants, imgsIndex, assets }) {
         slidesPerView={1}
       >
         {assetsArray.map((img) => (
-          <SwiperSlide key={img.id}>
-            <img src={img.url} alt={name} loading="lazy" />
+          <SwiperSlide key={img._key}>
+            <img src={urlFor(img)} alt={img.alt} loading="lazy" />
           </SwiperSlide>
         ))}
       </Swiper>

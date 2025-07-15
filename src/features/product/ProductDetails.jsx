@@ -6,61 +6,50 @@ import Button from "../../ui/Button";
 import Heading from "../../ui/Heading";
 import Price from "../../ui/Price";
 
-import { formatCurrency } from "../../utilis/helpers";
-import { useAddToCart } from "../cart/useAddToCart";
+import { addToCart, formatCurrency } from "../../utilis/helpers";
 
 const StyledProductDetails = styled.div`
   height: 100%;
-
   display: grid;
   grid-template-rows: 1fr auto;
   gap: var(--space-7);
 
   @media only screen and (max-width: 50em) {
-    & {
-      padding-left: var(--space-11);
-      padding-right: var(--space-11);
-    }
+    padding-left: var(--space-11);
+    padding-right: var(--space-11);
   }
 
   @media only screen and (max-width: 31.25em) {
-    & {
-      padding-left: var(--space-7);
-      padding-right: var(--space-7);
-    }
+    padding-left: var(--space-7);
+    padding-right: var(--space-7);
   }
 
   @media only screen and (max-width: 27.5em) {
-    & {
-      padding-left: var(--space-2);
-      padding-right: var(--space-2);
-    }
+    padding-left: var(--space-2);
+    padding-right: var(--space-2);
   }
 
   @media only screen and (max-width: 20em) {
-    & {
-      padding-left: 0;
-      padding-right: 0;
-    }
+    padding-left: 0;
+    padding-right: 0;
   }
 
-  & button {
+  button {
     flex: 1;
   }
 `;
 
 const DetailsContainer = styled.div`
-  overflow: scroll;
-
+  overflow: auto;
   display: flex;
   flex-direction: column;
   gap: var(--space-11);
 `;
 
 const Details = styled.div`
-  & h3 {
+  h3 {
     margin-bottom: var(--space-6);
-    & span {
+    span {
       color: var(--color-grey-500);
     }
   }
@@ -70,139 +59,126 @@ const Option = styled.div`
   padding: var(--space-5);
   border: 1px solid var(--color-grey-400);
   border-radius: var(--border-radius-lg);
-
   position: relative;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  & input {
+  &.disabled {
+    opacity: 0.7;
+  }
+
+  input {
     width: 100%;
     height: 100%;
     opacity: 0;
     cursor: pointer;
-
     position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+    inset: 0;
   }
 
-  & p {
+  p {
     color: var(--color-grey-500);
   }
 `;
 
-// TODO: Restructure this component later, and make it simpler.
 function ProductDetails({
+  product,
   productId,
   variants,
   price,
   setImgsIndex,
   onAddError,
 }) {
+  const [selectedOptions, setSelectedOptions] = useState({});
   const [additionalPrice, setAdditionalPrice] = useState(0);
-  const ref = useRef();
+  const containerRef = useRef();
 
-  const { addToCart, isAdding } = useAddToCart();
+  const updateSelectedOptions = (variantName, optionId, extraPrice) => {
+    setSelectedOptions((prev) => ({
+      ...prev,
+      [variantName]: { id: optionId, extraPrice },
+    }));
 
-  function handleClick() {
-    const inputs = [...ref.current.querySelectorAll("input")];
-    const colorVariants = [
-      ...[...ref.current.querySelectorAll("h3")]
-        .find((el) => el.textContent.includes("Color"))
-        .parentElement.querySelectorAll("input"),
-    ];
-
-    inputs.forEach((input) => {
-      // 1. Remove the disabled class from all the parents elements fo the input
-      input.parentElement.classList.remove("disabled");
-
-      // 2. Add the disabled class only the NON selected options
-      !input.checked && input.parentElement.classList.add("disabled");
-    });
-
-    // 3. Calculate the new price based on selected options
-    const price = inputs
-      .filter((input) => input.checked)
-      .reduce((acc, cur) => acc + Number(cur.value), 0);
-
-    // 4. Add this price to USE STATE HOOK to render to UI
-    setAdditionalPrice(price);
-
-    // 5. Get current select color variant
-    const currentColorInputIndex = colorVariants.findIndex(
-      (input) => input.checked
+    const totalExtraPrice = Object.values(selectedOptions).reduce(
+      (sum, option) => sum + (option.extraPrice || 0),
+      extraPrice || 0
     );
+    setAdditionalPrice(totalExtraPrice);
 
-    setImgsIndex(currentColorInputIndex === -1 ? 0 : currentColorInputIndex);
-  }
-
-  function handleAddToCart() {
-    // 1. Select all the inputs
-    const inputs = [...ref.current.querySelectorAll("input")];
-
-    // 2. Get the parent elements of these inputs
-    let parentOfInputs = new Set();
-    inputs.forEach((input) => {
-      parentOfInputs.add(input.name);
-    });
-
-    // 2. Get the checked inputs
-    const checkedInputsCategory = inputs.filter((input) => input.checked);
-    const checkedInputsCategoryName = checkedInputsCategory.map(
-      (input) => input.name
-    );
-
-    const inputsOptionsID = checkedInputsCategory.map(
-      (input) => input.parentElement.id
-    );
-    const inputsValuesID = checkedInputsCategory.map((input) => input.id);
-
-    // 3. Based on this condition: add to cart or render error
-    if ([...parentOfInputs].length === checkedInputsCategoryName.length) {
-      const variantsObj = {};
-      inputsOptionsID.forEach((id, i) => (variantsObj[id] = inputsValuesID[i]));
-
-      const productObj = {
-        productId,
-        quantity: 1,
-        variants: variantsObj,
-      };
-
-      addToCart(productObj);
-      onAddError(false);
-    } else {
-      onAddError(true);
+    if (variantName === "Color") {
+      const colorIndex = variants
+        .find((v) => v.name === "Color")
+        ?.values.findIndex((v) => v._key === optionId);
+      setImgsIndex(colorIndex >= 0 ? colorIndex : 0);
     }
-  }
+  };
+
+  const handleAddToCart = () => {
+    const allVariantsSelected = variants.every(
+      (variant) => selectedOptions[variant.name]
+    );
+
+    if (!allVariantsSelected) {
+      onAddError(true);
+      return;
+    }
+
+    const selectedVariants = variants.map((variant) => ({
+      name: variant.name,
+      value: variant.values.find(
+        (v) => v._key === selectedOptions[variant.name]?.id
+      ),
+    }));
+
+    const productObj = {
+      ...product,
+      _id: productId,
+      quantity: 1,
+      variantOptions: selectedVariants.reduce((acc, curr) => {
+        acc[curr.name] = curr.value;
+        return acc;
+      }, {}),
+      finalPrice: price + additionalPrice,
+    };
+
+    addToCart(productObj);
+    onAddError(false);
+  };
 
   return (
     <StyledProductDetails>
-      <DetailsContainer ref={ref}>
+      <DetailsContainer ref={containerRef}>
         {variants.map((variant) => (
-          <Details key={variant.id}>
+          <Details key={variant._key}>
             <Heading as="h3" className="heading">
               {variant.name}.
             </Heading>
             <Row $direction="column" className="options">
-              {variant.options.map((option) => (
+              {variant.values.map((option) => (
                 <Option
-                  className="disabled"
-                  onClick={handleClick}
-                  id={variant.id}
-                  key={option.id}
+                  key={option._key}
+                  className={
+                    selectedOptions[variant.name]?.id === option._key
+                      ? ""
+                      : "disabled"
+                  }
                 >
                   <input
                     type="radio"
-                    id={option.id}
+                    id={option._key}
                     name={variant.name}
-                    value={option.price.raw}
+                    checked={selectedOptions[variant.name]?.id === option._key}
+                    onChange={() =>
+                      updateSelectedOptions(
+                        variant.name,
+                        option._key,
+                        option.extraPrice
+                      )
+                    }
                   />
                   <Heading as="h4">{option.name}</Heading>
-                  <p>+{formatCurrency(option.price.raw)}</p>
+                  <p>+{formatCurrency(option.extraPrice)}</p>
                 </Option>
               ))}
             </Row>
@@ -211,8 +187,12 @@ function ProductDetails({
       </DetailsContainer>
 
       <Row $align="center" $justify="space-between" $gap={5}>
-        <Button disabled={isAdding} onClick={handleAddToCart}>
-          {isAdding ? "Adding..." : "Add to cart"}
+        <Button
+          // disabled={isAdding}
+          onClick={handleAddToCart}
+        >
+          {/* {isAdding ? "Adding..." : "Add to cart"} */}
+          Add to cart
         </Button>
         <Price>{formatCurrency(price + additionalPrice)}</Price>
       </Row>

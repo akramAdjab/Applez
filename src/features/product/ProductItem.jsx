@@ -141,13 +141,7 @@ function ProductItem({ product }) {
   //   observer.observe(element);
   // });
 
-  const {
-    id,
-    name,
-    assets,
-    variant_groups: variants,
-    price: { raw: price },
-  } = product;
+  const { _id: id, variantOptions: variants, price } = product;
 
   function handleShowHideBtnContainer() {
     setShowTrailerContainer((show) => !show);
@@ -156,14 +150,10 @@ function ProductItem({ product }) {
   return (
     <>
       <StyledProduct ref={containerRef}>
-        <ProductGallery
-          name={name}
-          variants={variants}
-          imgsIndex={imgsIndex}
-          assets={assets}
-        />
+        <ProductGallery variants={variants} imgsIndex={imgsIndex} />
 
         <ProductDetails
+          product={product}
           productId={id}
           variants={variants}
           price={price}

@@ -11,7 +11,7 @@ function Product() {
 
   return (
     <SectionWithTitle
-      shadowTitle={product?.categories.at(0).name}
+      shadowTitle={product?.collection?.name}
       mainTitle={product?.name}
       full={true}
     >
