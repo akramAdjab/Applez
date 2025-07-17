@@ -58,8 +58,6 @@ function CategoryItem({ category, buttons }) {
     featuredImage,
   } = category;
 
-  console.log(name);
-
   if (buttons) return <Button>{name}</Button>;
 
   return (

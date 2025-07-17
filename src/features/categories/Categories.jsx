@@ -7,7 +7,6 @@ import CategoriesButtons from "./CategoriesButtons";
 
 function Categories({ type }) {
   const { categories, isLoadingCategories } = useCategories();
-  console.log(categories);
 
   if (isLoadingCategories)
     return <Loading type={type ? type : "categoriesBoxes"} length={7} />;
