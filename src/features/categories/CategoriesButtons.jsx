@@ -44,15 +44,12 @@ function CategoriesButtons({ categories }) {
       {categories?.map((category) => (
         <Button
           $variation={
-            (searchParams.get("category") === "tv-home"
-              ? "tv-&-home"
-              : searchParams.get("category")) ===
-            category.name.toLowerCase().replaceAll(" ", "-")
+            searchParams.get("category") === category.slug.current
               ? "primary"
               : "secondary"
           }
-          key={category.id}
-          onClick={() => handleUpdateSearch(category.slug)}
+          key={category._id}
+          onClick={() => handleUpdateSearch(category.slug.current)}
         >
           {category.name}
         </Button>
