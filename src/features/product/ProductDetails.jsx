@@ -1,12 +1,14 @@
 import { useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
+
+import { formatCurrency } from "../../utilis/helpers";
+import { addToCart } from "../../redux/cartSlice";
 
 import Row from "../../ui/Row";
 import Button from "../../ui/Button";
 import Heading from "../../ui/Heading";
 import Price from "../../ui/Price";
-
-import { addToCart, formatCurrency } from "../../utilis/helpers";
 
 const StyledProductDetails = styled.div`
   height: 100%;
@@ -93,6 +95,7 @@ function ProductDetails({
   const [selectedOptions, setSelectedOptions] = useState({});
   const [additionalPrice, setAdditionalPrice] = useState(0);
   const containerRef = useRef();
+  const dispatch = useDispatch();
 
   const updateSelectedOptions = (variantName, optionId, extraPrice) => {
     setSelectedOptions((prev) => ({
@@ -142,7 +145,7 @@ function ProductDetails({
       finalPrice: price + additionalPrice,
     };
 
-    addToCart(productObj);
+    dispatch(addToCart(productObj));
     onAddError(false);
   };
 
