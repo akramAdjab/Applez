@@ -1,11 +1,8 @@
 import { NavLink } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { HiOutlineShoppingBag } from "react-icons/hi2";
 import styled, { css } from "styled-components";
 
-import SpinnerMini from "./SpinnerMini";
-
-import { useCart } from "../features/cart/useCart";
 import { showHideCart } from "../redux/cartSlice";
 
 const List = styled.ul`
@@ -54,29 +51,20 @@ const StyledNavLink = styled(NavLink)`
 `;
 
 function Navbar({ type, isCurrentlyHomepage }) {
-  const { cart, isLoadingCart } = useCart();
+  const { cart } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
 
   if (type === "icon")
     return (
       <nav>
         <List>
-          {/* <StyledNavLink
-            to="/bookmarks"
-            type="icon"
-            isCurrentlyHomepage={isCurrentlyHomepage}
-          >
-            <HiOutlineHeart />
-            <span>0</span>
-          </StyledNavLink> */}
-
           <StyledNavLink
             type="icon"
             onClick={() => dispatch(showHideCart(true))}
             iscurrentlyhomepage={isCurrentlyHomepage.toString()}
           >
             <HiOutlineShoppingBag />
-            <span>{!isLoadingCart ? cart?.total_items : <SpinnerMini />}</span>
+            <span>{cart.totalQuantity}</span>
           </StyledNavLink>
         </List>
       </nav>
