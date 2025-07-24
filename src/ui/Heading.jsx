@@ -36,6 +36,7 @@ const Heading = styled.h1`
     css`
       font-size: var(--text-4);
       font-weight: var(--weight-4);
+      white-space: nowrap;
     `}
 
   ${(props) =>
