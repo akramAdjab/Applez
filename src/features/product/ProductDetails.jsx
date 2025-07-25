@@ -138,11 +138,10 @@ function ProductDetails({
       ...product,
       _id: productId,
       quantity: 1,
-      variantOptions: selectedVariants.reduce((acc, curr) => {
-        acc[curr.name] = curr.value;
-        return acc;
-      }, {}),
-      finalPrice: price + additionalPrice,
+      variantOptions: selectedVariants.map((variant) => ({
+        name: variant.name,
+        value: variant.value,
+      })),
     };
 
     dispatch(addToCart(productObj));
