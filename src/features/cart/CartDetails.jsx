@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { showHideCart } from "../../redux/cartSlice";
 import styled, { css } from "styled-components";
 
@@ -14,6 +14,7 @@ import SpinnerMini from "../../ui/SpinnerMini";
 import { useCart } from "./useCart";
 import { formatCurrency } from "../../utilis/helpers";
 import { useCartToEmpty } from "./useCartToEmpty";
+import { useState } from "react";
 
 const StyledCartDetails = styled.div`
   /* margin-top: var(--space-13); */
@@ -165,16 +166,18 @@ function CartDetails({ cartPage }) {
   // HOOKS
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { cart, isLoadingCart } = useCart();
-  const { cartToEmpty, isEmptyingCart } = useCartToEmpty();
+
+  const { cart } = useSelector((state) => state.cart);
+  // const { cart, isLoadingCart } = useCart();
+  // const { cartToEmpty, isEmptyingCart } = useCartToEmpty();
 
   const mediaQuery = window.matchMedia("(max-width: 56.25em)");
   const smallScreens = mediaQuery.matches;
 
   // HANDLER FUNCTIONS
   function handleEmptyCart() {
-    cartToEmpty();
-    dispatch(showHideCart());
+    // cartToEmpty();
+    // dispatch(showHideCart());
   }
 
   function handleNavigate() {
@@ -188,10 +191,10 @@ function CartDetails({ cartPage }) {
   }
 
   // if loading data
-  if (isLoadingCart) return <SpinnerMini margin={8} width={5.6} />;
+  // if (isLoadingCart) return <SpinnerMini margin={8} width={5.6} />;
 
   // if the cart is empty
-  if (!cart?.line_items.length)
+  if (!cart.items.length)
     return (
       <Row
         $direction="column"
@@ -218,8 +221,8 @@ function CartDetails({ cartPage }) {
         </TableRow>
 
         <div className="table-products-container">
-          {cart?.line_items.map((item) => (
-            <TableBody role="row" key={item.id}>
+          {cart.items.map((item, i) => (
+            <TableBody role="row" key={`${item._id}--${i}`}>
               <CartItem product={item} smallScreens={smallScreens} />
             </TableBody>
           ))}
@@ -231,19 +234,11 @@ function CartDetails({ cartPage }) {
           <Heading as="h3">
             <span>Total price:</span>
           </Heading>
-          <Price $size={4}>
-            {isLoadingCart
-              ? "calculation..."
-              : formatCurrency(cart?.subtotal.raw)}
-          </Price>
+          <Price $size={4}>{formatCurrency(cart.subtotal)}</Price>
         </Row>
 
         <Row $justify="flex-end">
-          <Button
-            $variation="danger"
-            disabled={isEmptyingCart}
-            onClick={handleEmptyCart}
-          >
+          <Button $variation="danger" onClick={handleEmptyCart}>
             Empty your cart
           </Button>
           <Button onClick={handleNavigate}>Checkout</Button>

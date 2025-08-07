@@ -2,7 +2,7 @@ function CartProductOptions({ optionsWithoutColorAndModel }) {
   return (
     <p style={{ lineHeight: "1.5" }}>
       {optionsWithoutColorAndModel
-        .map((option) => option.option_name)
+        .map((option) => option.value.name)
         .join(", ")}
     </p>
   );
