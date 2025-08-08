@@ -3,18 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { showHideCart } from "../../redux/cartSlice";
 import styled, { css } from "styled-components";
 
+import { formatCurrency } from "../../utilis/helpers";
+
 import CartItem from "./CartItem";
 import Row from "../../ui/Row";
 import Heading from "../../ui/Heading";
 import Button from "../../ui/Button";
 import Price from "../../ui/Price";
 import Message from "../../ui/Message";
-import SpinnerMini from "../../ui/SpinnerMini";
-
-import { useCart } from "./useCart";
-import { formatCurrency } from "../../utilis/helpers";
-import { useCartToEmpty } from "./useCartToEmpty";
-import { useState } from "react";
 
 const StyledCartDetails = styled.div`
   /* margin-top: var(--space-13); */
