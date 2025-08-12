@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  showIntroVideo: true,
+  showIntroVideo: false,
   path: "iPhone_15_Pro",
   // path: "MacBook_Air",
 };
