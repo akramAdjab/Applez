@@ -59,7 +59,7 @@ function HeroWithBackground({ path, mainTitle, subTitle, buttonTitle }) {
           {subTitle}
         </p>
 
-        <ButtonLink to="/product/D4DNrw" lightcolor="true">
+        <ButtonLink to="/product/iphone-16-pro" lightcolor="true">
           <span>{buttonTitle}</span>
           <HiChevronRight />
         </ButtonLink>
