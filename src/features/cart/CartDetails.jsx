@@ -11,6 +11,7 @@ import Heading from "../../ui/Heading";
 import Button from "../../ui/Button";
 import Price from "../../ui/Price";
 import Message from "../../ui/Message";
+import { toast } from "sonner";
 
 const StyledCartDetails = styled.div`
   /* margin-top: var(--space-13); */
@@ -172,13 +173,19 @@ function CartDetails({ cartPage }) {
 
   // HANDLER FUNCTIONS
   function handleEmptyCart() {
+    toast.error(
+      "Cart empty button has been disabled for security reasons. Please try again next time."
+    );
     // cartToEmpty();
     // dispatch(showHideCart());
   }
 
   function handleNavigate() {
-    navigate("/checkout");
-    dispatch(showHideCart());
+    // navigate("/checkout");
+    toast.error(
+      "Checkout has been disabled for security reasons. Please try again next time."
+    );
+    // dispatch(showHideCart());
   }
 
   function handleBackToShop() {

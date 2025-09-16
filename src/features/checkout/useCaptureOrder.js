@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { captureOrder as captureOrderApi } from "../../services/apiCheckout";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 
 export function useCaptureOrder() {
   const queryClient = useQueryClient();

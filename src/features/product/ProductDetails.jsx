@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
+import { toast } from "sonner";
 import styled from "styled-components";
 
 import { formatCurrency } from "../../utilis/helpers";
@@ -145,6 +146,7 @@ function ProductDetails({
     };
 
     dispatch(addToCart(productObj));
+    toast.success("Product added to cart");
     onAddError(false);
   };
 

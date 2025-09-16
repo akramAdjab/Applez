@@ -10,6 +10,7 @@ import Price from "../../ui/Price";
 import Row from "../../ui/Row";
 import Button from "../../ui/Button";
 import CartProductOptions from "./CartProductOptions";
+import { toast } from "sonner";
 
 function CartItem({ product, smallScreens }) {
   // Distracturing the product object
@@ -37,9 +38,9 @@ function CartItem({ product, smallScreens }) {
   function handleDec() {
     // Remove product from the cart
     if (quantityState <= 1) {
-      console.log("entered");
       setQuantityState(1);
       dispatch(removeFromCart({ _id: productId, variantOptions: options }));
+      toast.success("Product removed from cart");
     } else {
       // 1. Update the state
       setQuantityState((quantity) => (quantity -= 1));
@@ -51,6 +52,7 @@ function CartItem({ product, smallScreens }) {
           quantity: quantityState - 1,
         })
       );
+      toast.success("Product quantity updated");
     }
   }
 
@@ -65,6 +67,8 @@ function CartItem({ product, smallScreens }) {
         quantity: quantityState + 1,
       })
     );
+    // 3. Toast message
+    toast.success("Product quantity updated");
   }
 
   return (
